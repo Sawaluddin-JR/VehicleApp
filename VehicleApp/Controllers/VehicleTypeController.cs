@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VehicleApp.Data;
 using VehicleApp.Models;
@@ -8,7 +7,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class VehicleTypeController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -71,7 +70,7 @@ namespace VehicleApp.Controllers
 
         // POST: api/VehicleType
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleType>> PostVehicleType(VehicleType vehicleType)
         {
             vehicleType.CreatedAt = DateTime.UtcNow;
@@ -85,7 +84,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/VehicleType/5
         [HttpPatch("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchVehicleType(int id, VehicleType vehicleType)
         {
             if (id != vehicleType.Id)
@@ -111,7 +110,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/VehicleType/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVehicleType(int id)
         {
             var vehicleType = await _context.VehicleTypes.FindAsync(id);

@@ -12,8 +12,8 @@ namespace VehicleApp.Data.Repository
         User IUserRepository.Create(User user)
         {
             _context.Users.Add(user);
-            //user.Id = _context.SaveChanges();
-            _context.SaveChanges();
+            user.Id = _context.SaveChanges();
+            //_context.SaveChanges();
 
             return user;
         }

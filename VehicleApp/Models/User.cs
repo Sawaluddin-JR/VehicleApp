@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VehicleApp.Models
 {
-    public enum UserRole
+    /*public enum UserRole
     {
         User,
         Admin
-    }
+    }*/
 
     public class User
     {
@@ -30,6 +30,6 @@ namespace VehicleApp.Models
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        public UserRole Role { get; set; }
+        //public UserRole Role { get; set; }
     }
 }

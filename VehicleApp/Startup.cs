@@ -20,17 +20,17 @@ namespace VehicleApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
             services.AddDbContext<VehicleContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddAuthorization();
+            services.AddCors();
+
             services.AddControllers();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<JwtService>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -41,7 +41,7 @@ namespace VehicleApp
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
                 };
-            });
+            });*/
 
             services.AddSwaggerGen(c =>
             {
@@ -62,7 +62,7 @@ namespace VehicleApp
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
             app.UseAuthorization();
 

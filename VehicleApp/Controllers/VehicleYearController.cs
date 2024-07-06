@@ -9,7 +9,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class VehicleYearController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -74,7 +74,7 @@ namespace VehicleApp.Controllers
 
         // POST: api/VehicleYear
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleYear>> PostVehicleYear(VehicleYear vehicleYear)
         {
             try
@@ -96,7 +96,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/VehicleYear/5
         [HttpPatch("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchVehicleYear(int id, VehicleYear vehicleYear)
         {
             if (id != vehicleYear.Id)
@@ -121,7 +121,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/VehicleYear/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVehicleYear(int id)
         {
             var vehicleYear = await _context.VehicleYears.FindAsync(id);

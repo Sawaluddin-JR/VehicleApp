@@ -33,9 +33,9 @@ namespace VehicleApp.Controllers
                     Email = registerDto.Email,
                     Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                     IsAdmin = registerDto.IsAdmin,
-                    Role = registerDto.IsAdmin ? UserRole.Admin : UserRole.User,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
+                    //Role = registerDto.IsAdmin ? UserRole.Admin : UserRole.User,
+                    //CreatedAt = DateTime.Now,
+                    //UpdatedAt = DateTime.Now
                 };
                 return Created("success", _repository.Create(user));
             }
@@ -71,8 +71,8 @@ namespace VehicleApp.Controllers
             return Ok(new
             {
                 jwt,
-                message = "success",
-                role = user.Role
+                message = "success"
+                //role = user.Role
             });
         }
 
