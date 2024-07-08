@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VehicleApp.Data;
 using VehicleApp.Models;
@@ -7,7 +8,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class PriceListController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -19,6 +20,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/PriceList
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<PriceList>>> GetPriceLists(
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10,
@@ -65,6 +67,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/PriceList/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<PriceList>> GetPriceList(int id)
         {
             var priceList = await _context.PriceLists
@@ -82,7 +85,7 @@ namespace VehicleApp.Controllers
 
         // POST: api/PriceList
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PriceList>> PostPriceList(PriceList priceList)
         {
             _context.PriceLists.Add(priceList);
@@ -93,7 +96,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/PriceList/5
         [HttpPatch("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchPriceList(int id, PriceList priceList)
         {
             if (id != priceList.Id)
@@ -121,7 +124,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/PriceList/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePriceList(int id)
         {
             var priceList = await _context.PriceLists.FindAsync(id);

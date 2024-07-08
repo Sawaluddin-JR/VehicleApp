@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using VehicleApp.Data;
 using VehicleApp.Models;
 
@@ -9,7 +8,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class VehicleYearController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -23,6 +22,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleYear
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<VehicleYear>>> GetVehicleYears(
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10,
@@ -60,6 +60,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleYear/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<VehicleYear>> GetVehicleYear(int id)
         {
             var vehicleYear = await _context.VehicleYears.FindAsync(id);
@@ -74,7 +75,7 @@ namespace VehicleApp.Controllers
 
         // POST: api/VehicleYear
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleYear>> PostVehicleYear(VehicleYear vehicleYear)
         {
             try
@@ -88,7 +89,6 @@ namespace VehicleApp.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error details
                 _logger.LogError(ex, "An error occurred while creating a vehicle year.");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = $"Failed to create vehicle year: {ex.Message}" });
             }
@@ -96,7 +96,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/VehicleYear/5
         [HttpPatch("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchVehicleYear(int id, VehicleYear vehicleYear)
         {
             if (id != vehicleYear.Id)
@@ -121,7 +121,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/VehicleYear/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVehicleYear(int id)
         {
             var vehicleYear = await _context.VehicleYears.FindAsync(id);

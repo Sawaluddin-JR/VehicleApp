@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using VehicleApp.Data.Dtos;
 using VehicleApp.Data.Repository;
 using VehicleApp.Helpers;
@@ -61,7 +62,7 @@ namespace VehicleApp.Controllers
                 return BadRequest(new { message = "Invalid Credentials" });
             }
 
-            var jwt = _jwtService.Generate(user.Id);
+            var jwt = _jwtService.Generate(user.Id, user.IsAdmin);
 
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
@@ -84,7 +85,8 @@ namespace VehicleApp.Controllers
                 var jwt = Request.Cookies["jwt"];
                 var token = _jwtService.Verify(jwt);
 
-                int userId = int.Parse(token.Issuer);
+                //int userId = int.Parse(token.Issuer);
+                int userId = int.Parse(token.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
                 var user = _repository.GetById(userId);
 

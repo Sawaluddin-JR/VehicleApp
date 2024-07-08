@@ -5,9 +5,9 @@ namespace VehicleApp.Data
 {
     public class VehicleContext : DbContext
     {
-        public VehicleContext(DbContextOptions<VehicleContext> options) : base(options) 
+        public VehicleContext(DbContextOptions<VehicleContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<User> Users { get; set; }
@@ -21,42 +21,35 @@ namespace VehicleApp.Data
         {
             modelBuilder.Entity<User>().Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<User>().Property(u => u.UpdatedAt).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
             modelBuilder.Entity<VehicleBrand>().Property(vb => vb.CreatedAt).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<VehicleBrand>().Property(vb => vb.UpdatedAt).HasDefaultValueSql("GETDATE()");
 
             modelBuilder.Entity<VehicleType>().Property(vt => vt.CreatedAt).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<VehicleType>().Property(vt => vt.UpdatedAt).HasDefaultValueSql("GETDATE()");
-
-            modelBuilder.Entity<VehicleYear>().Property(vy => vy.CreatedAt).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<VehicleYear>().Property(vy => vy.UpdatedAt).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<VehicleType>()
+               .HasOne(vt => vt.Brand)
+               .WithMany()
+               .HasForeignKey(vt => vt.BrandId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<VehicleModel>().Property(vm => vm.CreatedAt).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<VehicleModel>().Property(vm => vm.UpdatedAt).HasDefaultValueSql("GETDATE()");
-
-            modelBuilder.Entity<PriceList>().Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<PriceList>().Property(p => p.UpdatedAt).HasDefaultValueSql("GETDATE()");
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasIndex(e => e.Email).IsUnique();
-            });
-
-            modelBuilder.Entity<VehicleType>()
-                .HasOne(vt => vt.Brand)
-                .WithMany()
-                .HasForeignKey(vt => vt.BrandId);
-
             modelBuilder.Entity<VehicleModel>()
                 .HasOne(vm => vm.Type)
                 .WithMany()
                 .HasForeignKey(vm => vm.TypeId);
 
+            modelBuilder.Entity<VehicleYear>().Property(vy => vy.CreatedAt).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<VehicleYear>().Property(vy => vy.UpdatedAt).HasDefaultValueSql("GETDATE()");
+
+            modelBuilder.Entity<PriceList>().Property(p => p.CreatedAt).HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<PriceList>().Property(p => p.UpdatedAt).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<PriceList>()
                 .HasOne(p => p.Year)
                 .WithMany()
                 .HasForeignKey(p => p.YearId);
-
             modelBuilder.Entity<PriceList>()
                 .HasOne(p => p.Model)
                 .WithMany()

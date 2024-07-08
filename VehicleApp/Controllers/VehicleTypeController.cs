@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VehicleApp.Data;
 using VehicleApp.Models;
@@ -7,7 +8,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class VehicleTypeController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -19,6 +20,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleType
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<VehicleType>>> GetVehicleTypes(
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10,
@@ -56,6 +58,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleType/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<VehicleType>> GetVehicleType(int id)
         {
             var vehicleType = await _context.VehicleTypes.FindAsync(id);
@@ -70,11 +73,20 @@ namespace VehicleApp.Controllers
 
         // POST: api/VehicleType
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleType>> PostVehicleType(VehicleType vehicleType)
         {
             vehicleType.CreatedAt = DateTime.UtcNow;
             vehicleType.UpdatedAt = DateTime.UtcNow;
+
+            if (vehicleType.BrandId != 0)
+            {
+                vehicleType.Brand = await _context.VehicleBrands.FindAsync(vehicleType.BrandId);
+                if (vehicleType.Brand == null)
+                {
+                    return BadRequest(new { message = "Invalid BrandId provided." });
+                }
+            }
 
             _context.VehicleTypes.Add(vehicleType);
             await _context.SaveChangesAsync();
@@ -84,7 +96,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/VehicleType/5
         [HttpPatch("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchVehicleType(int id, VehicleType vehicleType)
         {
             if (id != vehicleType.Id)
@@ -110,7 +122,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/VehicleType/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVehicleType(int id)
         {
             var vehicleType = await _context.VehicleTypes.FindAsync(id);

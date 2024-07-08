@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VehicleApp.Data;
 using VehicleApp.Models;
@@ -7,7 +8,7 @@ namespace VehicleApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class VehicleBrandController : ControllerBase
     {
         private readonly VehicleContext _context;
@@ -19,6 +20,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleBrand
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<VehicleBrand>>> GetVehicleBrands(
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10,
@@ -56,6 +58,7 @@ namespace VehicleApp.Controllers
 
         // GET: api/VehicleBrand/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<VehicleBrand>> GetVehicleBrand(int id)
         {
             var vehicleBrand = await _context.VehicleBrands.FindAsync(id);
@@ -70,7 +73,7 @@ namespace VehicleApp.Controllers
 
         // POST: api/VehicleBrand
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<VehicleBrand>> PostVehicleBrand(VehicleBrand vehicleBrand)
         {
             _context.VehicleBrands.Add(vehicleBrand);
@@ -81,7 +84,7 @@ namespace VehicleApp.Controllers
 
         // PATCH: api/VehicleBrand/5
         [HttpPatch("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PatchVehicleBrand(int id, VehicleBrand vehicleBrand)
         {
             if (id != vehicleBrand.Id)
@@ -106,7 +109,7 @@ namespace VehicleApp.Controllers
 
         // DELETE: api/VehicleBrand/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVehicleBrand(int id)
         {
             var vehicleBrand = await _context.VehicleBrands.FindAsync(id);

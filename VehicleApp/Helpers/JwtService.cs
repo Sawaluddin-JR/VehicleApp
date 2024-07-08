@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
@@ -12,16 +13,28 @@ namespace VehicleApp.Helpers
     {
         private string secureKey = "this is my custom Secret key for authentication";
 
-        public string Generate(int id)
+        public string Generate(int id,bool isAdmin)
         {
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
             var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
             var header = new JwtHeader(credentials);
 
-            var payload = new JwtPayload(id.ToString(), null, null, null, DateTime.Today.AddDays(1));
-            var securityToken = new JwtSecurityToken(header, payload);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+                new Claim(ClaimTypes.Role, isAdmin ? "Admin" : "User")
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: credentials);
+
+            //var payload = new JwtPayload(id.ToString(), null, null, null, DateTime.Today.AddDays(1));
+            //var payload = new JwtPayload(claims);
+            //var securityToken = new JwtSecurityToken(header, payload);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public JwtSecurityToken Verify(string jwt)
